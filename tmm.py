@@ -16,15 +16,16 @@
 
 import numpy as np
 import matplotlib.pyplot as plt
-import module.module as module
+from modules.material import Material
+from modules.utils import eV2THz, angle_between
 
 epsEpath = './dielectrics/CNT-align-not-packed/epsE.txt'
 epsOpath = './dielectrics/CNT-align-not-packed/epsO.txt'
 
-for jj in [2,10,20,50]:#range(0,1):
-    mat = module.Material(1000)
+for jj in range(0,1):
+    mat = Material(1000)
 
-    N = jj
+    N = 20
     mat.add_epsE(1.0)
     mat.add_epsO(1.0)
     mat.add_mu(1.0)
@@ -33,8 +34,8 @@ for jj in [2,10,20,50]:#range(0,1):
         mat.add_epsE(epsEpath)
         mat.add_epsO(epsOpath)
         mat.add_mu(1.0)
-        mat.add_angle(-i*1*np.pi/2/N)
-        mat.add_layer(100.0/jj)
+        mat.add_angle(+1*1*np.pi/2)
+        mat.add_layer(5.0)
     mat.add_epsE(1.0)
     mat.add_epsO(1.0)
     mat.add_mu(1.0)
@@ -49,26 +50,29 @@ for jj in [2,10,20,50]:#range(0,1):
 
     mat.TMM(0,N+1)
 
-    t_pol1, r_pol1, T1, R1, A1 = mat.coeff(right_pol)
-    t_pol2, r_pol2, T2, R2, A2 = mat.coeff(left_pol)
+    i_pol1, t_pol1, r_pol1, T1, R1, A1 = mat.coefficients(x_pol)
+    #t_pol2, r_pol2, T2, R2, A2 = mat.coeff(left_pol)
 
 
-    # plt.plot(mat.freqs/module.eV2THz, 0.0*np.ones((mat.N)), 'k--')
-    # plt.plot(mat.freqs/module.eV2THz, abs(t_pol1[:,1]), label='|Ey|')
-    # plt.plot(mat.freqs/module.eV2THz, abs(t_pol1[:,0]), label='|Ex|')
-    # plt.plot(mat.freqs/module.eV2THz, np.angle(t_pol1[:,1]) - np.angle(t_pol1[:,0]), label='ellipticity')
-    # plt.ylim(-np.pi/2, np.pi/2)
-    # plt.xlabel('Frequency (eV)')
-    # plt.ylabel('Transmitted fields')
+    plt.plot(mat.freqs/eV2THz, 0.0*np.ones((mat.N)), 'k--')
+    plt.plot(mat.freqs/eV2THz, abs(t_pol1[:,1]), label='|Ey|')
+    plt.plot(mat.freqs/eV2THz, abs(t_pol1[:,0]), label='|Ex|')
+    #plt.plot(mat.freqs/module.eV2THz, np.angle(t_pol1[:,1]) - np.angle(t_pol1[:,0]), label='ellipticity')
+    plt.plot(mat.freqs/eV2THz, angle_between(t_pol1[:,1], t_pol1[:,0]), label='ellipticity2')
+    #plt.plot(mat.freqs/module.eV2THz, np.angle(t_pol1[:,0]), label='x')
+    #plt.plot(mat.freqs/module.eV2THz, np.angle(t_pol1[:,1]), label='y')
+    #plt.ylim(-np.pi/2, np.pi/2)
+    plt.xlabel('Frequency (eV)')
+    plt.ylabel('Transmitted fields')
 
     #plt.plot(mat.freqs/module.eV2THz, A1, label=f'x pol. {jj}')
     #plt.plot(mat.freqs/module.eV2THz, A2, label=f'y pol. {jj}')
-    plt.plot(mat.freqs/module.eV2THz, A1-A2, label=f'{jj}')
+    #plt.plot(mat.freqs/module.eV2THz, A1-A2, label=f'{jj}')
     #plt.ylim(-0.001, 0.009)
     #plt.ylim(-0.02, 0.13)
     #plt.ylim(-0.05, 0.6)
-    plt.xlabel('Frequency (eV)')
-    plt.ylabel('Absorption coeff')
+    # plt.xlabel('Frequency (eV)')
+    # plt.ylabel('Absorption coeff')
 
     # plt.plot(mat.freqs, A2 - A1, label='A')
     # plt.plot(mat.freqs, T2 - T1, label='T')

@@ -15,36 +15,10 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 import numpy as np
-from scipy.interpolate import interp1d
-
-# some physical constants
-cspeed = 299792.458       # nm/ps
-eps_vac = 8.8541878128e-9  # pF/nm
-mu_vac = 1.25663706212e-3  # ps^2/pF/nm
-eV2THz = 241.79893        # 1eV = 241.79893 THz
-
-def angle_between1(vec1, vec2):
-    return np.arctan2(vec1[0]*vec2[1]-vec1[1]*vec2[0], vec1[0]*vec2[0]+vec1[1]*vec2[1])
-
-def angle_between2(vec1, vec2):
-    return np.arctan2(vec1.real*vec2.imag-vec1.imag*vec2.real, vec1.real*vec2.real+vec1.imag*vec2.imag)
-
-def load_epsilon(path):
-    data = np.loadtxt(path)
-    freq = data[:,0]
-    eps = interp1d(freq, data[:,1] + 1j*data[:,2])
-    return freq, eps
-
-def fill(vec, freqs):
-    for i in range(0, len(vec)):
-        if callable(vec[i]):
-            vec[i] = vec[i](freqs)
-        else:
-            vec[i] = vec[i]*np.ones(len(freqs), dtype=np.complex)
-    return np.array(vec)
+from modules.utils import *
 
 class Material(object):
-    # Material class
+
     def __init__(self, N=100):
         self.N = N
         self.freqs = []
@@ -86,46 +60,6 @@ class Material(object):
     def add_angle(self, *args):
         for arg in args:
             self.angle.append(arg)
-
-    def R1(self, theta):
-        # rotation matrix for the fields
-        # the fileds are defined as column vectors
-        # F = (E_x, H_y, E_y, H_x)
-        # The counterclockwise rotated fields are
-        # F' = R1(theta) F
-        #
-        #             | cos  0   -sin  0   |
-        # R1(theta) = | 0    cos  0    sin |
-        #             | sin  0    cos  0   |
-        #             | 0   -sin  0    cos |
-        R = np.zeros((4,4))
-        for i in range(0,4):
-            R[i,i] = np.cos(theta)
-        R[0,2] = -np.sin(theta)
-        R[1,3] = +np.sin(theta)
-        R[2,0] = +np.sin(theta)
-        R[3,1] = -np.sin(theta)
-        return R
-
-    def R2(self, theta):
-        # rotation matrix for the amplitudes
-        # the amplitudes are defined as column vectors
-        # A = (E+_x, E-_x, E+_y, E-_y)
-        # The counterclockwise rotated amplitudes are
-        # A' = R2(theta) A
-        #
-        #             | cos  0   -sin  0   |
-        # R2(theta) = | 0    cos  0   -sin |
-        #             | sin  0    cos  0   |
-        #             | 0    sin  0    cos |
-        R = np.zeros((4,4))
-        for i in range(0,4):
-            R[i,i] = np.cos(theta)
-        R[0,2] = -np.sin(theta)
-        R[1,3] = -np.sin(theta)
-        R[2,0] = +np.sin(theta)
-        R[3,1] = +np.sin(theta)
-        return R
 
     def M_matrix(self, i):
         M = np.zeros((self.N, 4, 4), dtype=np.complex)
@@ -176,16 +110,30 @@ class Material(object):
         return ainv
 
     def T_matrix(self, i, f):
-        T = np.matmul(self.a_matrix(i), self.R2(self.angle[i]))
+        T = np.matmul(self.a_matrix(i), R2(self.angle[i]))
         for k in range(i+1, f):
-            T = np.matmul(self.R1(self.angle[k]-self.angle[k-1]), T)
+            T = np.matmul(R1(self.angle[k]-self.angle[k-1]), T)
             T = np.matmul(self.M_matrix(k), T)
-        T = np.matmul(self.R1(self.angle[f]-self.angle[f-1]), T)
+        T = np.matmul(R1(self.angle[f]-self.angle[f-1]), T)
         T = np.matmul(self.ainv_matrix(f), T)
-        T = np.matmul(self.R2(-self.angle[f]), T)
+        T = np.matmul(R2(-self.angle[f]), T)
         return T
 
-    def coeff(self, J):
+    def coefficients(self, IA):
+        # Calculates the Transmission, Reflection and Absorption coefficients
+        # given the IA : complex incident amplitudes (Jones vector)
+        # input
+        #     IA : ndarray[Ex, EY]         constant 2D complex array
+        #     IA : ndarray[self.N, Ex, EY] frequency dependent 2D complex array
+        # returns
+        #     complex electric field amplitudes: IA, TA and RA, incident, transmitted and reflected amplitudes
+        #     (real) electric field intensities: TI, RI and AI, transmitted, reflected and absorbed intensities
+
+        if IA.shape == (2,):
+            IA = np.ones((self.N,2))*IA
+        II = np.zeros((self.N), dtype = complex) # incident intensity
+        RI = np.zeros((self.N), dtype = complex) # reflected intensity
+        TI = np.zeros((self.N), dtype = complex) # transmitted intensity
         A = np.zeros((self.N, 4, 4), dtype=np.complex)
         B = np.zeros((self.N, 4), dtype=np.complex)
         A[:,0,0] = self.T[:,0,1]
@@ -204,20 +152,18 @@ class Material(object):
         A[:,3,1] = self.T[:,3,3]
         A[:,3,2] = 0
         A[:,3,3] = 0
-        B[:,0] = -self.T[:,0,0]*J[0] - self.T[:,0,2]*J[1]
-        B[:,1] = -self.T[:,1,0]*J[0] - self.T[:,1,2]*J[1]
-        B[:,2] = -self.T[:,2,0]*J[0] - self.T[:,2,2]*J[1]
-        B[:,3] = -self.T[:,3,0]*J[0] - self.T[:,3,2]*J[1]
+        B[:,0] = -self.T[:,0,0]*IA[:,0] - self.T[:,0,2]*IA[:,1]
+        B[:,1] = -self.T[:,1,0]*IA[:,0] - self.T[:,1,2]*IA[:,1]
+        B[:,2] = -self.T[:,2,0]*IA[:,0] - self.T[:,2,2]*IA[:,1]
+        B[:,3] = -self.T[:,3,0]*IA[:,0] - self.T[:,3,2]*IA[:,1]
         X = np.linalg.solve(A, B)
-        AR = X[:,0:2]
-        AT = X[:,2:4]
-        II = np.vdot(J,J)
-        IR = np.zeros((self.N), dtype = complex)
-        IT = np.zeros((self.N), dtype = complex)
+        RA = X[:,0:2]
+        TA = X[:,2:4]
         for i in range(self.N):
-            IR[i] = np.vdot(AR[i,:], AR[i,:])
-            IT[i] = np.vdot(AT[i,:], AT[i,:])
-        return AT, AR, (IT/II).real, (IR/II).real, 1 - (IT/II).real - (IR/II).real
+            II[i] = np.vdot(IA[i,:], IA[i,:])
+            RI[i] = np.vdot(RA[i,:], RA[i,:])
+            TI[i] = np.vdot(TA[i,:], TA[i,:])
+        return IA, TA, RA, (TI/II).real, (RI/II).real, 1 - (TI/II).real - (RI/II).real
 
     def TMM(self, i, f):
         for j in range(len(self.thick)):
