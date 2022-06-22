@@ -78,6 +78,7 @@ class Material(object):
                 self.IA[ef] = np.zeros((self.N, 2), dtype=complex)
                 self.IA[ef][:, 0] = Ex(self.freqs)
                 self.IA[ef][:, 1] = Ey(self.freqs)
+        self.freqs = self.freqs * eV2THz  # freq from eV to THz
 
     def setGeometry(self, layers, thicks, angles):
         self.epsO = []
@@ -235,7 +236,6 @@ class Material(object):
     def TMM(self, i=0, f=None):
         if f == None:
             f = len(self.mu) - 1
-        self.freqs = self.freqs * eV2THz  # freq from eV to THz
         self.T[f'T({i},{f})'] = self.tMatrix(i, f)
 
     def getT(self, i=0, f=None):
