@@ -1,0 +1,26 @@
+{
+    "flag": "example",
+    "freq": [ 0.0, 10.0, 1000 ],
+    "materials": {
+        "air": 1.0,
+        "CNT": "./dielectrics/cnt/",
+        "sapp": [ 3.07, 0.07 ]
+    },
+    "efields": {
+        "x_pol": 1.0,
+        "left_pol": [ 1.0, "left" ],
+        "THz_pulse": "./fields/thz_pulse/"
+    },
+    "geometries": {
+        "setup1": {
+            "layers": [ "air", "sapp", "CNT", "air" ],
+            "angles": [ 0.0, 0.0, [ 0.0, 3.14159, 100 ], 0.0 ],
+            "thicks": [ 100.0, [ 5.0, 5.0, 100 ] ]
+        },
+        "setup2": {
+            "layers": [ "air", "CNT", "air" ],
+            "angles": [ 0.0, [ 0.0, 1.57, 100 ], 0.0 ],
+            "thicks": [ [ 5.0, 5.0, 100 ] ]
+        }
+    }
+}
