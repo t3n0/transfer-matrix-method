@@ -14,6 +14,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+import matplotlib.pyplot as plt
 import numpy as np
 import os
 from modules.utils import *
@@ -80,43 +81,49 @@ class Material(object):
                 self.IA[ef][:, 1] = Ey(self.freqs)
         self.freqs = self.freqs * eV2THz  # freq from eV to THz
 
-    def setGeometry(self, layers, thicks, angles):
+    def setEpsMu(self, epsmu):
+        self.epsO.append(epsmu[0])
+        self.epsE.append(epsmu[1])
+        self.mu.append(epsmu[2])
+
+    def initGeometry(self):
         self.epsO = []
         self.epsE = []
         self.mu = []
         self.thick = []
         self.inter = [0.0]
         self.angle = []
+        self.labelPos = []
+
+    def setGeometry(self, layers, thicks, angles):
+        self.layers = layers
+        self.thicks = thicks
+        self.angles = angles
         assert len(layers) == (len(thicks) + 2) == len(angles)
-        self.epsO.append(self.materials[layers[0]][0])
-        self.epsE.append(self.materials[layers[0]][1])
-        self.mu.append(self.materials[layers[0]][2])
+        self.initGeometry()
+        self.setEpsMu(self.materials[layers[0]])
         self.angle.append(angles[0])
         for i in range(1, len(layers)-1):
             if (isinstance(thicks[i-1], int) or isinstance(thicks[i-1], float)) and (isinstance(angles[i], int) or isinstance(angles[i], float)):
-                self.epsO.append(self.materials[layers[i]][0])
-                self.epsE.append(self.materials[layers[i]][1])
-                self.mu.append(self.materials[layers[i]][2])
+                self.setEpsMu(self.materials[layers[i]])
                 self.angle.append(angles[i])
                 self.thick.append(thicks[i-1])
+                self.labelPos.append(self.inter[-1] + self.thick[i-1]/2)
                 self.inter.append(self.inter[-1]+self.thick[i-1])
             elif isinstance(thicks[i-1], list) and isinstance(angles[i], list):
                 thick_unpack = np.linspace(*thicks[i-1])
                 angle_unpack = np.linspace(*angles[i])
                 assert len(thick_unpack) == len(angle_unpack)
+                self.labelPos.append(self.inter[-1] + sum(thick_unpack)/2)
                 for j in range(len(angle_unpack)):
-                    self.epsO.append(self.materials[layers[i]][0])
-                    self.epsE.append(self.materials[layers[i]][1])
-                    self.mu.append(self.materials[layers[i]][2])
+                    self.setEpsMu(self.materials[layers[i]])
                     self.angle.append(angle_unpack[j])
                     self.thick.append(thick_unpack[j])
                     self.inter.append(self.inter[-1]+thick_unpack[j])
             else:
                 raise NotImplementedError(
                     'Layers, thickness or angles samples mismatch.')
-        self.epsO.append(self.materials[layers[-1]][0])
-        self.epsE.append(self.materials[layers[-1]][1])
-        self.mu.append(self.materials[layers[-1]][2])
+        self.setEpsMu(self.materials[layers[-1]])
         self.angle.append(angles[-1])
 
     def addLayer(self, *args):
@@ -247,3 +254,30 @@ class Material(object):
         if f == None:
             f = len(self.mu) - 1
         return self.coeff[f'{efield}({i},{f})']
+
+    def plotGeometry(self, path=None):
+        fig = plt.figure(figsize=(8,5), dpi=100)
+        ax1 = fig.add_axes([0.1,0.5,0.8,0.4])
+        #ax1.set_axis_off()
+        ax1.set_title('Ciao')
+        ax1.set_xlabel('z (nm)')
+        ax1.set_yticks([])
+        ax1.set_xlim(self.inter[0], self.inter[-1])
+        ax1.set_ylim(-1,1)
+        for i in range(len(self.inter)-1):
+            xs = [self.inter[i],self.inter[i],self.inter[i+1],self.inter[i+1]]
+            ys = [-1,1,1,-1]
+            c = (0.3, 0.5, 0.7)
+            change = self.angle[i+1]/max(self.angle)
+            ax1.fill(xs,ys,color=(c[0],c[1]*change,c[2],0.7))
+        pos = 0
+        for i in range(1, len(self.layers)-1):
+            if self.labelPos[i-1] - pos < (self.labelPos[-1] - self.labelPos[0])/10:
+                y = 1.25
+            else:
+                y = 1.1
+            pos = self.labelPos[i-1]
+            ax1.text(self.labelPos[i-1], y, self.layers[i], va='center', ha='center')
+        ax1.text(-0.01*self.inter[-1], 0.0, self.layers[0], va='center', ha='right')
+        ax1.text(1.01*self.inter[-1], 0.0, self.layers[-1], va='center', ha='left')
+        plt.show()

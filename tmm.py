@@ -14,8 +14,6 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-import numpy as np
-import matplotlib.pyplot as plt
 from modules.material import Material
 from modules.utils import input
 
@@ -26,22 +24,15 @@ geometries = data['geometries']
 mat = Material(data['materials'], data['efields'], data['freq'])
 
 mat.setGeometry(**geometries["setup1"])
-mat.TMM()
-mat.calculateCoeff()
+mat.plotGeometry()
 
-ia, ra, ta, ti, ri, ai1 = mat.getCoeff('x_pol')
-ia, ra, ta, ti, ri, ai2 = mat.getCoeff('left_pol')
+#mat.TMM()
+#mat.calculateCoeff()
 
-plt.plot(mat.freqs, ai1)
-plt.plot(mat.freqs, ai2)
+#x_pol = mat.getCoeff('x_pol')
+#ia, ta, ra, ti, ri, ai2 = mat.getCoeff('left_pol')
 
-mat.setGeometry(**geometries["setup2"])
-mat.TMM()
-mat.calculateCoeff()
-
-ia, ra, ta, ti, ri, ai1 = mat.getCoeff('x_pol')
-ia, ra, ta, ti, ri, ai2 = mat.getCoeff('left_pol')
-
-plt.plot(mat.freqs, ai1)
-plt.plot(mat.freqs, ai2)
-plt.show()
+# plt.plot(mat.freqs, abs(x_pol[1][:,0]))
+# plt.plot(mat.freqs, abs(x_pol[1][:,1]))
+# plt.plot(mat.freqs, angle_between(x_pol[1][:,1], x_pol[1][:,0]))
+# plt.show()
