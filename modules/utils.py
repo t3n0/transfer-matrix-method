@@ -19,12 +19,20 @@ import os
 import sys
 import json
 from scipy.interpolate import interp1d
+from matplotlib.cm import get_cmap
 
 # some physical constants
 cspeed = 299792.458       # nm/ps
 eps_vac = 8.8541878128e-9  # pF/nm
 mu_vac = 1.25663706212e-3  # ps^2/pF/nm
 eV2THz = 241.79893        # 1eV = 241.79893 THz
+
+
+def mycolors(i, n):
+    x = np.linspace(0.1, 0.9, n)
+    cmap = get_cmap('rainbow')
+    rgba = cmap(x)
+    return rgba[i]
 
 
 def input():

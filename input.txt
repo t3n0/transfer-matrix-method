@@ -5,8 +5,7 @@
         "air": 1.0,
         "CNT": "./dielectrics/cnt/",
         "sapp": [ 3.07, 0.07 ],
-        "pollo" : 2.0,
-        "ciccio" : 3.0
+        "pollo" : 2.0
     },
     "efields": {
         "x_pol": 1.0,
@@ -15,9 +14,9 @@
     },
     "geometries": {
         "setup1": {
-            "layers": [ "air", "sapp", "CNT", "pollo", "ciccio", "CNT", "air" ],
-            "angles": [ 0.0, 0.0, [ 0.0, 3.14159, 20 ], 1.0, 0.0, [1.57,0.0, 10], 0.0 ],
-            "thicks": [ 100.0, [ 5.0, 5.0, 20 ], 20, 35, [3.0,3.0,10] ]
+            "layers": [ "air", "sapp", "CNT", "pollo", "CNT", "air" ],
+            "angles": [ 0.0, 0.0, [ 0.0, 3.14159, 20 ], 1.0, [1.57,0.0, 10], 0.0 ],
+            "thicks": [ 100.0, [ 5.0, 5.0, 20 ], 53, [3.0,3.0,10] ]
         },
         "setup2": {
             "layers": [ "air", "CNT", "air" ],

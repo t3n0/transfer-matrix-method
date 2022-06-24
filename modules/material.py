@@ -20,6 +20,19 @@ import os
 from modules.utils import *
 
 
+SMALL_SIZE = 8
+MEDIUM_SIZE = 10
+BIGGER_SIZE = 12
+
+plt.rc('font', size=SMALL_SIZE)          # controls default text sizes
+plt.rc('axes', titlesize=SMALL_SIZE)     # fontsize of the axes title
+plt.rc('axes', labelsize=MEDIUM_SIZE)    # fontsize of the x and y labels
+plt.rc('xtick', labelsize=SMALL_SIZE)    # fontsize of the tick labels
+plt.rc('ytick', labelsize=SMALL_SIZE)    # fontsize of the tick labels
+plt.rc('legend', fontsize=SMALL_SIZE)    # legend fontsize
+plt.rc('figure', titlesize=BIGGER_SIZE)  # fontsize of the figure title
+
+
 class Material(object):
 
     def __init__(self, materials={'air': 1.0}, efields={'x_pol': 1.0}, default=[0.0, 10.0, 1000]):
@@ -87,6 +100,9 @@ class Material(object):
         self.mu.append(epsmu[2])
 
     def initGeometry(self):
+        self.colors = {}
+        for i, mat in enumerate(self.materials):
+            self.colors[mat] = mycolors(i, len(self.materials))
         self.epsO = []
         self.epsE = []
         self.mu = []
@@ -96,12 +112,12 @@ class Material(object):
         self.labelPos = []
 
     def setGeometry(self, layers, thicks, angles):
+        self.colorlist = []
         self.layers = layers
-        self.thicks = thicks
-        self.angles = angles
         assert len(layers) == (len(thicks) + 2) == len(angles)
         self.initGeometry()
         self.setEpsMu(self.materials[layers[0]])
+        self.colorlist.append(self.colors[layers[0]])
         self.angle.append(angles[0])
         for i in range(1, len(layers)-1):
             if (isinstance(thicks[i-1], int) or isinstance(thicks[i-1], float)) and (isinstance(angles[i], int) or isinstance(angles[i], float)):
@@ -110,6 +126,7 @@ class Material(object):
                 self.thick.append(thicks[i-1])
                 self.labelPos.append(self.inter[-1] + self.thick[i-1]/2)
                 self.inter.append(self.inter[-1]+self.thick[i-1])
+                self.colorlist.append(self.colors[layers[i]])
             elif isinstance(thicks[i-1], list) and isinstance(angles[i], list):
                 thick_unpack = np.linspace(*thicks[i-1])
                 angle_unpack = np.linspace(*angles[i])
@@ -120,10 +137,12 @@ class Material(object):
                     self.angle.append(angle_unpack[j])
                     self.thick.append(thick_unpack[j])
                     self.inter.append(self.inter[-1]+thick_unpack[j])
+                    self.colorlist.append(self.colors[layers[i]])
             else:
                 raise NotImplementedError(
                     'Layers, thickness or angles samples mismatch.')
         self.setEpsMu(self.materials[layers[-1]])
+        self.colorlist.append(self.colors[layers[-1]])
         self.angle.append(angles[-1])
 
     def addLayer(self, *args):
@@ -255,29 +274,42 @@ class Material(object):
             f = len(self.mu) - 1
         return self.coeff[f'{efield}({i},{f})']
 
-    def plotGeometry(self, path=None):
-        fig = plt.figure(figsize=(8,5), dpi=100)
-        ax1 = fig.add_axes([0.1,0.5,0.8,0.4])
+    def plotGeometry(self, title='', path=None):
+        fig = plt.figure(figsize=(8,4), dpi=300)
+        ax1 = fig.add_axes([0.1,0.4,0.85,0.45])
+        fig.suptitle(title)
         #ax1.set_axis_off()
-        ax1.set_title('Ciao')
-        ax1.set_xlabel('z (nm)')
+        ax1.set_xticks([])
         ax1.set_yticks([])
         ax1.set_xlim(self.inter[0], self.inter[-1])
         ax1.set_ylim(-1,1)
         for i in range(len(self.inter)-1):
             xs = [self.inter[i],self.inter[i],self.inter[i+1],self.inter[i+1]]
             ys = [-1,1,1,-1]
-            c = (0.3, 0.5, 0.7)
-            change = self.angle[i+1]/max(self.angle)
+            c = self.colorlist[i+1]
+            change = self.angle[i+1]/(max(self.angle)+1e-5)
             ax1.fill(xs,ys,color=(c[0],c[1]*change,c[2],0.7))
         pos = 0
+        y1 = 1.25
+        y = y2 = 1.1
         for i in range(1, len(self.layers)-1):
             if self.labelPos[i-1] - pos < (self.labelPos[-1] - self.labelPos[0])/10:
-                y = 1.25
-            else:
-                y = 1.1
+                y = y1
+                y1 = y2
+                y2 = y
             pos = self.labelPos[i-1]
             ax1.text(self.labelPos[i-1], y, self.layers[i], va='center', ha='center')
-        ax1.text(-0.01*self.inter[-1], 0.0, self.layers[0], va='center', ha='right')
-        ax1.text(1.01*self.inter[-1], 0.0, self.layers[-1], va='center', ha='left')
-        plt.show()
+        ax1.text(-0.01*self.inter[-1], 0.0, self.layers[0], va='center', ha='right', rotation=90)
+        ax1.text(1.01*self.inter[-1], 0.0, self.layers[-1], va='center', ha='left', rotation=90)
+
+        ax2 = fig.add_axes([0.1,0.2,0.85,0.2])
+        for i in range(len(self.inter)-1):
+            ax2.hlines(self.angle[i+1],self.inter[i], self.inter[i+1])
+        ax2.set_xlim(self.inter[0], self.inter[-1])
+        ax2.set_ylim(-0.05*max(self.angle),1.05*max(self.angle))
+        ax2.set_xlabel('z (nm)')
+        ax2.set_ylabel('Θ (rad)')
+        if path == None:
+            plt.show()
+        else:
+            fig.savefig(path)

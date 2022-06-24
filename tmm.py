@@ -15,24 +15,38 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 from modules.material import Material
-from modules.utils import input
 
-data = input()
+if __name__ == '__main__':
+    import os
+    from modules.utils import input
 
-geometries = data['geometries']
+    data = input()
+    geometries = data['geometries']
+    mat = Material(data['materials'], data['efields'], data['freq'])
 
-mat = Material(data['materials'], data['efields'], data['freq'])
+    WORK_DIR = os.getcwd()
+    MATS_DIR = os.path.join(WORK_DIR, data['flag'], 'materials')
+    GEOS_DIR = []
+    for geo in geometries:
+        GEOS_DIR.append(os.path.join(WORK_DIR, data['flag'], geo))
 
-mat.setGeometry(**geometries["setup1"])
-mat.plotGeometry()
+    if not os.path.exists(MATS_DIR):
+        os.makedirs(MATS_DIR)
+    for geo_dir in GEOS_DIR:
+        if not os.path.exists(geo_dir):
+            os.makedirs(geo_dir)
 
-#mat.TMM()
-#mat.calculateCoeff()
+    for geo in geometries:
+        mat.setGeometry(**geometries[geo])
+        mat.plotGeometry(geo)
 
-#x_pol = mat.getCoeff('x_pol')
-#ia, ta, ra, ti, ri, ai2 = mat.getCoeff('left_pol')
+    #mat.TMM()
+    #mat.calculateCoeff()
 
-# plt.plot(mat.freqs, abs(x_pol[1][:,0]))
-# plt.plot(mat.freqs, abs(x_pol[1][:,1]))
-# plt.plot(mat.freqs, angle_between(x_pol[1][:,1], x_pol[1][:,0]))
-# plt.show()
+    #x_pol = mat.getCoeff('x_pol')
+    #ia, ta, ra, ti, ri, ai2 = mat.getCoeff('left_pol')
+
+    # plt.plot(mat.freqs, abs(x_pol[1][:,0]))
+    # plt.plot(mat.freqs, abs(x_pol[1][:,1]))
+    # plt.plot(mat.freqs, angle_between(x_pol[1][:,1], x_pol[1][:,0]))
+    # plt.show()
