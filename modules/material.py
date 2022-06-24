@@ -313,3 +313,18 @@ class Material(object):
             plt.show()
         else:
             fig.savefig(path)
+
+    def plotMaterial(self, name, path=None):
+        fig = plt.figure(figsize=(8,6), dpi=300)
+        ax1 = fig.add_axes([0.1,0.1,0.85,0.85])
+        fig.suptitle(name)
+        ax1.plot(self.freqs, self.materials[name][0].real)
+        ax1.plot(self.freqs, self.materials[name][0].imag)
+        ax1.plot(self.freqs, self.materials[name][1].real)
+        ax1.plot(self.freqs, self.materials[name][1].imag)
+        ax1.set_xlabel('Frequency (eV)')
+        ax1.set_ylabel('Dielectric function')
+        if path == None:
+            plt.show()
+        else:
+            plt.savefig(path)

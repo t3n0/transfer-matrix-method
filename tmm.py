@@ -37,6 +37,10 @@ if __name__ == '__main__':
         if not os.path.exists(geo_dir):
             os.makedirs(geo_dir)
 
+    for name in mat.materials:
+        filename = os.path.join(MATS_DIR, name)
+        mat.plotMaterial(name, filename)
+
     for ig, geo in enumerate(geometries):
         mat.setGeometry(**geometries[geo])
         filename = os.path.join(GEOS_DIR[ig], geo + '.png')
