@@ -14,6 +14,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+from fileinput import filename
 from modules.material import Material
 
 if __name__ == '__main__':
@@ -36,9 +37,10 @@ if __name__ == '__main__':
         if not os.path.exists(geo_dir):
             os.makedirs(geo_dir)
 
-    for geo in geometries:
+    for ig, geo in enumerate(geometries):
         mat.setGeometry(**geometries[geo])
-        mat.plotGeometry(geo)
+        filename = os.path.join(GEOS_DIR[ig], geo + '.png')
+        mat.plotGeometry(geo, filename)
 
     #mat.TMM()
     #mat.calculateCoeff()
