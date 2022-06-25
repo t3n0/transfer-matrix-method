@@ -275,20 +275,20 @@ class Material(object):
         return self.coeff[f'{efield}({i},{f})']
 
     def plotGeometry(self, title='', path=None):
-        fig = plt.figure(figsize=(8,4), dpi=300)
-        ax1 = fig.add_axes([0.1,0.4,0.85,0.45])
+        fig = plt.figure(figsize=(8, 4), dpi=300)
+        ax1 = fig.add_axes([0.1, 0.4, 0.85, 0.45])
         fig.suptitle(title)
-        #ax1.set_axis_off()
         ax1.set_xticks([])
         ax1.set_yticks([])
         ax1.set_xlim(self.inter[0], self.inter[-1])
-        ax1.set_ylim(-1,1)
+        ax1.set_ylim(-1, 1)
         for i in range(len(self.inter)-1):
-            xs = [self.inter[i],self.inter[i],self.inter[i+1],self.inter[i+1]]
-            ys = [-1,1,1,-1]
+            xs = [self.inter[i], self.inter[i],
+                  self.inter[i+1], self.inter[i+1]]
+            ys = [-1, 1, 1, -1]
             c = self.colorlist[i+1]
             change = self.angle[i+1]/(max(self.angle)+1e-5)
-            ax1.fill(xs,ys,color=(c[0],c[1]*change,c[2],0.7))
+            ax1.fill(xs, ys, color=(c[0], c[1]*change, c[2], 0.7))
         pos = 0
         y1 = 1.25
         y = y2 = 1.1
@@ -298,15 +298,18 @@ class Material(object):
                 y1 = y2
                 y2 = y
             pos = self.labelPos[i-1]
-            ax1.text(self.labelPos[i-1], y, self.layers[i], va='center', ha='center')
-        ax1.text(-0.01*self.inter[-1], 0.0, self.layers[0], va='center', ha='right', rotation=90)
-        ax1.text(1.01*self.inter[-1], 0.0, self.layers[-1], va='center', ha='left', rotation=90)
+            ax1.text(self.labelPos[i-1], y,
+                     self.layers[i], va='center', ha='center')
+        ax1.text(-0.01*self.inter[-1], 0.0, self.layers[0],
+                 va='center', ha='right', rotation=90)
+        ax1.text(1.01*self.inter[-1], 0.0, self.layers[-1],
+                 va='center', ha='left', rotation=90)
 
-        ax2 = fig.add_axes([0.1,0.2,0.85,0.2])
+        ax2 = fig.add_axes([0.1, 0.2, 0.85, 0.2])
         for i in range(len(self.inter)-1):
-            ax2.hlines(self.angle[i+1],self.inter[i], self.inter[i+1])
+            ax2.hlines(self.angle[i+1], self.inter[i], self.inter[i+1])
         ax2.set_xlim(self.inter[0], self.inter[-1])
-        ax2.set_ylim(-0.05*max(self.angle),1.05*max(self.angle))
+        ax2.set_ylim(-0.05*max(self.angle), 1.05*max(self.angle))
         ax2.set_xlabel('z (nm)')
         ax2.set_ylabel('Θ (rad)')
         if path == None:
@@ -315,16 +318,19 @@ class Material(object):
             fig.savefig(path)
 
     def plotMaterial(self, name, path=None):
-        fig = plt.figure(figsize=(8,6), dpi=300)
-        ax1 = fig.add_axes([0.1,0.1,0.85,0.85])
+        fig = plt.figure(figsize=(8, 6), dpi=300)
+        ax1 = fig.add_axes([0.1, 0.1, 0.85, 0.85])
         fig.suptitle(name)
-        ax1.plot(self.freqs, self.materials[name][0].real)
-        ax1.plot(self.freqs, self.materials[name][0].imag)
-        ax1.plot(self.freqs, self.materials[name][1].real)
-        ax1.plot(self.freqs, self.materials[name][1].imag)
+        ax1.plot(self.freqs/eV2THz, self.materials[name][0].real/eps_vac)
+        ax1.plot(self.freqs/eV2THz, self.materials[name][0].imag/eps_vac)
+        ax1.plot(self.freqs/eV2THz, self.materials[name][1].real/eps_vac)
+        ax1.plot(self.freqs/eV2THz, self.materials[name][1].imag/eps_vac)
         ax1.set_xlabel('Frequency (eV)')
         ax1.set_ylabel('Dielectric function')
         if path == None:
             plt.show()
         else:
             plt.savefig(path)
+            header = 'freq(eV) epsO1 epsO2 epsE1 epsE2'
+            save_file(self.freqs/eV2THz, self.materials[name][0]/eps_vac,
+                      self.materials[name][1]/eps_vac, path=path+'.txt', header=header)

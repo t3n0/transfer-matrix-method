@@ -37,22 +37,23 @@ if __name__ == '__main__':
         if not os.path.exists(geo_dir):
             os.makedirs(geo_dir)
 
+    # plotting materials and saving to file
     for name in mat.materials:
         filename = os.path.join(MATS_DIR, name)
         mat.plotMaterial(name, filename)
 
     for ig, geo in enumerate(geometries):
         mat.setGeometry(**geometries[geo])
-        filename = os.path.join(GEOS_DIR[ig], geo + '.png')
+        mat.TMM()
+        mat.calculateCoeff()
+
+        # loop oover the efields?
+        x_pol = mat.getCoeff('x_pol')
+        ia, ta, ra, ti, ri, ai2 = mat.getCoeff('left_pol')
+
+        # plotting geometry setup
+        filename = os.path.join(GEOS_DIR[ig], geo)
         mat.plotGeometry(geo, filename)
-
-    #mat.TMM()
-    #mat.calculateCoeff()
-
-    #x_pol = mat.getCoeff('x_pol')
-    #ia, ta, ra, ti, ri, ai2 = mat.getCoeff('left_pol')
-
-    # plt.plot(mat.freqs, abs(x_pol[1][:,0]))
-    # plt.plot(mat.freqs, abs(x_pol[1][:,1]))
-    # plt.plot(mat.freqs, angle_between(x_pol[1][:,1], x_pol[1][:,0]))
-    # plt.show()
+        # plotting results and save to file
+        #mat.plotResults()
+        #mat.saveResults()

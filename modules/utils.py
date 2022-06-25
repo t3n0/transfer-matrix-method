@@ -126,6 +126,17 @@ def R2(theta):
     return R
 
 
+def save_file(*args, path, header=''):
+    data = []
+    for arg in args:
+        if (arg.dtype == float) or (arg.dtype == int):
+            data.append(arg)
+        elif (arg.dtype == complex):
+            data.append(arg.real)
+            data.append(arg.imag)
+    data = np.array(data)
+    np.savetxt(path, data.T, header=header)
+
 def load_file(path):
     data = np.loadtxt(path)
     x = data[:, 0]
