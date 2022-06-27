@@ -408,11 +408,14 @@ class Material(object):
         # plot delta theta
         ax1t = ax1.twinx()
         ax2t = ax2.twinx()
-        ax1t.plot(self.freqs/eV2THz, data[7],'g--')
-        ax2t.plot(self.freqs/eV2THz, data[6],'g--')
+        ax1t.plot(self.freqs/eV2THz, data[7], 'g--')
+        ax2t.plot(self.freqs/eV2THz, data[6], 'g--')
         # [f'{efield}({i},{f})']
         if path == None:
             plt.show()
         else:
             fig.savefig(path)
+            header = 'freq(eV) IEx(real) IEx(imag) IEy(real) IEy(imag) TEx(real) TEx(imag) TEy(real) TEy(imag) REx(real) REx(imag) REy(real) REy(imag) Transmission Reflection Absorption deltaThetaT deltaThetaR'
+            save_file(self.freqs/eV2THz, data[0][:, 0], data[0][:, 1], data[1][:, 0], data[1][:, 1], data[2][:, 0],
+                      data[2][:, 1], data[3], data[4], data[5], data[6], data[7], path=path+'.txt', header=header)
             plt.close()
