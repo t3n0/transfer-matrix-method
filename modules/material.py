@@ -275,7 +275,10 @@ class Material(object):
         return self.coeff[f'{efield}({i},{f})']
 
     def plotGeometry(self, title='', path=None):
-        fig = plt.figure(figsize=(8, 4), dpi=300)
+        if path == None:
+            fig = plt.figure(figsize=(8, 4))
+        else:
+            fig = plt.figure(figsize=(8, 4), dpi=300)
         ax1 = fig.add_axes([0.1, 0.4, 0.85, 0.45])
         fig.suptitle(title)
         ax1.set_xticks([])
@@ -319,7 +322,10 @@ class Material(object):
             plt.close()
 
     def plotMaterial(self, name, path=None):
-        fig = plt.figure(figsize=(8, 6), dpi=300)
+        if path == None:
+            fig = plt.figure(figsize=(8, 6))
+        else:
+            fig = plt.figure(figsize=(8, 6), dpi=300)
         ax1 = fig.add_axes([0.1, 0.1, 0.85, 0.85])
         fig.suptitle(name)
         ax1.plot(self.freqs/eV2THz, self.materials[name][0].real/eps_vac)
@@ -331,22 +337,31 @@ class Material(object):
         if path == None:
             plt.show()
         else:
-            plt.savefig(path)
+            fig.savefig(path)
             header = 'freq(eV) epsO1 epsO2 epsE1 epsE2'
             save_file(self.freqs/eV2THz, self.materials[name][0]/eps_vac,
                       self.materials[name][1]/eps_vac, path=path+'.txt', header=header)
             plt.close()
 
-    def plotResults(self, efield, i=0, f=None):
+    def plotResults(self, efield, path=None, i=0, f=None):
         if f == None:
             f = len(self.mu) - 1
-        fig = plt.figure(figsize=(8, 6), dpi=300)
-        ax1 = fig.add_axes([0.1, 0.1, 0.4, 0.2])
-        ax2 = fig.add_axes([0.1, 0.3, 0.4, 0.2])
-        ax3 = fig.add_axes([0.1, 0.5, 0.4, 0.2])
-        ax4 = fig.add_axes([0.6, 0.1, 0.4, 0.2])
-        ax5 = fig.add_axes([0.6, 0.3, 0.4, 0.2])
-        ax6 = fig.add_axes([0.6, 0.5, 0.4, 0.2])
+        if path == None:
+            fig = plt.figure(figsize=(8, 6))
+        else:
+            fig = plt.figure(figsize=(8, 6), dpi=300)
+        ax1 = fig.add_axes([0.1, 0.1, 0.35, 0.2])
+        ax2 = fig.add_axes([0.1, 0.3, 0.35, 0.2])
+        ax3 = fig.add_axes([0.1, 0.5, 0.35, 0.2])
+        ax4 = fig.add_axes([0.6, 0.1, 0.35, 0.2])
+        ax5 = fig.add_axes([0.6, 0.3, 0.35, 0.2])
+        ax6 = fig.add_axes([0.6, 0.5, 0.35, 0.2])
+        ax1.set_xlabel('Frequency (eV)')
+        ax4.set_xlabel('Frequency (eV)')
         fig.suptitle(efield)
         #[f'{efield}({i},{f})']
-        plt.show()
+        if path == None:
+            plt.show()
+        else:
+            fig.savefig(path)
+            plt.close()

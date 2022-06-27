@@ -63,4 +63,5 @@ if __name__ == '__main__':
             print(f'\t\tIncident fields: {ef}')
             coeff = mat.getCoeff(ef)
             # plotting results and save to file
-            mat.plotResults(ef)
+            filename = os.path.join(GEOS_DIR[ii], ef)
+            mat.plotResults(ef, filename)
