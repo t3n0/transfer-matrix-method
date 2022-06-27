@@ -11,7 +11,7 @@
     "efields": {
         "x_pol": 1.0,
         "left_pol": [ 1.0, "left" ],
-        "THz_pulse": "./fields/thz_pulse/"
+        "pulse": "./fields/pulse/"
     },
     "geometries": {
         "setup1": {

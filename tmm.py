@@ -15,6 +15,7 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 from modules.material import Material
+import matplotlib.pyplot as plt
 
 if __name__ == '__main__':
     import os

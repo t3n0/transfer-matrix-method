@@ -14,6 +14,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+from cProfile import label
 import matplotlib.pyplot as plt
 import numpy as np
 import os
@@ -256,8 +257,10 @@ class Material(object):
                 II[ii] = np.vdot(IA[ii, :], IA[ii, :])
                 RI[ii] = np.vdot(RA[ii, :], RA[ii, :])
                 TI[ii] = np.vdot(TA[ii, :], TA[ii, :])
+            deltaThetaT = angle_between(TA[:, 1], TA[:, 0])/np.pi
+            deltaThetaR = angle_between(RA[:, 1], RA[:, 0])/np.pi
             self.coeff[f'{efield}({i},{f})'] = [
-                IA, TA, RA, (TI/II).real, (RI/II).real, 1 - (TI/II).real - (RI/II).real]
+                IA, TA, RA, (TI/II).real, (RI/II).real, 1 - (TI/II).real - (RI/II).real, deltaThetaT, deltaThetaR]
 
     def TMM(self, i=0, f=None):
         if f == None:
@@ -328,12 +331,17 @@ class Material(object):
             fig = plt.figure(figsize=(8, 6), dpi=300)
         ax1 = fig.add_axes([0.1, 0.1, 0.85, 0.85])
         fig.suptitle(name)
-        ax1.plot(self.freqs/eV2THz, self.materials[name][0].real/eps_vac)
-        ax1.plot(self.freqs/eV2THz, self.materials[name][0].imag/eps_vac)
-        ax1.plot(self.freqs/eV2THz, self.materials[name][1].real/eps_vac)
-        ax1.plot(self.freqs/eV2THz, self.materials[name][1].imag/eps_vac)
+        ax1.plot(self.freqs/eV2THz,
+                 self.materials[name][0].real/eps_vac, label='epsO1')
+        ax1.plot(self.freqs/eV2THz,
+                 self.materials[name][0].imag/eps_vac, label='epsO2')
+        ax1.plot(self.freqs/eV2THz,
+                 self.materials[name][1].real/eps_vac, label='epsE1')
+        ax1.plot(self.freqs/eV2THz,
+                 self.materials[name][1].imag/eps_vac, label='epsE2')
         ax1.set_xlabel('Frequency (eV)')
         ax1.set_ylabel('Dielectric function')
+        plt.legend()
         if path == None:
             plt.show()
         else:
@@ -350,16 +358,59 @@ class Material(object):
             fig = plt.figure(figsize=(8, 6))
         else:
             fig = plt.figure(figsize=(8, 6), dpi=300)
-        ax1 = fig.add_axes([0.1, 0.1, 0.35, 0.2])
-        ax2 = fig.add_axes([0.1, 0.3, 0.35, 0.2])
-        ax3 = fig.add_axes([0.1, 0.5, 0.35, 0.2])
-        ax4 = fig.add_axes([0.6, 0.1, 0.35, 0.2])
-        ax5 = fig.add_axes([0.6, 0.3, 0.35, 0.2])
-        ax6 = fig.add_axes([0.6, 0.5, 0.35, 0.2])
-        ax1.set_xlabel('Frequency (eV)')
-        ax4.set_xlabel('Frequency (eV)')
         fig.suptitle(efield)
-        #[f'{efield}({i},{f})']
+        ax1 = fig.add_axes([0.1, 0.07, 0.35, 0.27])
+        ax2 = fig.add_axes([0.1, 0.34, 0.35, 0.27])
+        ax3 = fig.add_axes([0.1, 0.61, 0.35, 0.27])
+        ax4 = fig.add_axes([0.6, 0.07, 0.35, 0.27])
+        ax5 = fig.add_axes([0.6, 0.34, 0.35, 0.27])
+        ax6 = fig.add_axes([0.6, 0.61, 0.35, 0.27])
+        # labels
+        plt.text(0.5, 0.02, 'Frequency (eV)', ha='center',
+                 va='center', transform=fig.transFigure)
+        plt.text(0.27, 0.93, 'Field amplitudes', ha='center',
+                 va='center', transform=fig.transFigure)
+        plt.text(0.77, 0.93, 'Field intensities', ha='center',
+                 va='center', transform=fig.transFigure)
+        plt.text(0.03, 0.74, 'Incident', ha='center', va='center',
+                 rotation=90, transform=fig.transFigure)
+        plt.text(0.03, 0.47, 'Transmitted', ha='center',
+                 va='center', rotation=90, transform=fig.transFigure)
+        plt.text(0.03, 0.20, 'Reflected', ha='center', va='center',
+                 rotation=90, transform=fig.transFigure)
+        plt.text(0.97, 0.74, 'Absorption', ha='center', va='center',
+                 rotation=90, transform=fig.transFigure)
+        plt.text(0.97, 0.47, 'Transmission', ha='center',
+                 va='center', rotation=90, transform=fig.transFigure)
+        plt.text(0.97, 0.20, 'Reflection', ha='center', va='center',
+                 rotation=90, transform=fig.transFigure)
+        plt.text(0.52, 0.20, 'ΔΘ (rad/π)', ha='center', va='center',
+                 rotation=90, transform=fig.transFigure)
+        plt.text(0.52, 0.47, 'ΔΘ (rad/π)', ha='center', va='center',
+                 rotation=90, transform=fig.transFigure)
+        ax2.set_xticks([])
+        ax3.set_xticks([])
+        ax5.set_xticks([])
+        ax6.set_xticks([])
+        # plot amplitude data
+        data = self.getCoeff(efield, i, f)
+        ax3.plot(self.freqs/eV2THz, np.abs(data[0][:, 0]), label='|Ex|')
+        ax3.plot(self.freqs/eV2THz, np.abs(data[0][:, 1]), label='|Ey|')
+        ax3.legend()
+        ax2.plot(self.freqs/eV2THz, np.abs(data[1][:, 0]))
+        ax2.plot(self.freqs/eV2THz, np.abs(data[1][:, 1]))
+        ax1.plot(self.freqs/eV2THz, np.abs(data[2][:, 0]))
+        ax1.plot(self.freqs/eV2THz, np.abs(data[2][:, 1]))
+        # plot intensity data
+        ax6.plot(self.freqs/eV2THz, data[5])
+        ax5.plot(self.freqs/eV2THz, data[3])
+        ax4.plot(self.freqs/eV2THz, data[4])
+        # plot delta theta
+        ax1t = ax1.twinx()
+        ax2t = ax2.twinx()
+        ax1t.plot(self.freqs/eV2THz, data[7],'g--')
+        ax2t.plot(self.freqs/eV2THz, data[6],'g--')
+        # [f'{efield}({i},{f})']
         if path == None:
             plt.show()
         else:
