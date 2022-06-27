@@ -1,0 +1,5 @@
+# electric field in the y direction
+# energy (eV), amplitude
+0.0 0.0
+7.0 0.0
+

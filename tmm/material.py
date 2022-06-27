@@ -14,11 +14,10 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-from cProfile import label
 import matplotlib.pyplot as plt
 import numpy as np
 import os
-from modules.utils import *
+from tmm.utils import *
 
 
 SMALL_SIZE = 8

@@ -14,12 +14,11 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-from modules.material import Material
-import matplotlib.pyplot as plt
 
-if __name__ == '__main__':
+def main():
+    from tmm.material import Material
     import os
-    from modules.utils import input
+    from tmm.utils import input
 
     data = input()
     geometries = data['geometries']
@@ -27,7 +26,8 @@ if __name__ == '__main__':
 
     WORK_DIR = os.getcwd()
     MATS_DIR = os.path.join(WORK_DIR, data['flag'], 'materials')
-    GEOS_DIR = [os.path.join(WORK_DIR, data['flag'], geo) for geo in geometries]
+    GEOS_DIR = [os.path.join(WORK_DIR, data['flag'], geo)
+                for geo in geometries]
     print(f'Current working directory:\n\t{WORK_DIR}')
 
     if not os.path.exists(MATS_DIR):
@@ -36,7 +36,8 @@ if __name__ == '__main__':
         if not os.path.exists(geo_dir):
             os.makedirs(geo_dir)
     print(f'Output directories:\n\t{MATS_DIR}', end='')
-    for i in range(len(GEOS_DIR)): print(f'\n\t{GEOS_DIR[i]}', end='')
+    for i in range(len(GEOS_DIR)):
+        print(f'\n\t{GEOS_DIR[i]}', end='')
     print()
 
     # plotting dielectric functions of all materials and saving to file
@@ -58,7 +59,6 @@ if __name__ == '__main__':
         mat.TMM()
         print(f'\tCalculate coefficients...')
         mat.calculateCoeff()
-
 
         for ef in data['efields']:
             print(f'\t\tIncident fields: {ef}')
