@@ -316,6 +316,7 @@ class Material(object):
             plt.show()
         else:
             fig.savefig(path)
+            plt.close()
 
     def plotMaterial(self, name, path=None):
         fig = plt.figure(figsize=(8, 6), dpi=300)
@@ -334,3 +335,18 @@ class Material(object):
             header = 'freq(eV) epsO1 epsO2 epsE1 epsE2'
             save_file(self.freqs/eV2THz, self.materials[name][0]/eps_vac,
                       self.materials[name][1]/eps_vac, path=path+'.txt', header=header)
+            plt.close()
+
+    def plotResults(self, efield, i=0, f=None):
+        if f == None:
+            f = len(self.mu) - 1
+        fig = plt.figure(figsize=(8, 6), dpi=300)
+        ax1 = fig.add_axes([0.1, 0.1, 0.4, 0.2])
+        ax2 = fig.add_axes([0.1, 0.3, 0.4, 0.2])
+        ax3 = fig.add_axes([0.1, 0.5, 0.4, 0.2])
+        ax4 = fig.add_axes([0.6, 0.1, 0.4, 0.2])
+        ax5 = fig.add_axes([0.6, 0.3, 0.4, 0.2])
+        ax6 = fig.add_axes([0.6, 0.5, 0.4, 0.2])
+        fig.suptitle(efield)
+        #[f'{efield}({i},{f})']
+        plt.show()

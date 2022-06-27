@@ -14,7 +14,6 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-from fileinput import filename
 from modules.material import Material
 
 if __name__ == '__main__':
@@ -27,33 +26,41 @@ if __name__ == '__main__':
 
     WORK_DIR = os.getcwd()
     MATS_DIR = os.path.join(WORK_DIR, data['flag'], 'materials')
-    GEOS_DIR = []
-    for geo in geometries:
-        GEOS_DIR.append(os.path.join(WORK_DIR, data['flag'], geo))
+    GEOS_DIR = [os.path.join(WORK_DIR, data['flag'], geo) for geo in geometries]
+    print(f'Current working directory:\n\t{WORK_DIR}')
 
     if not os.path.exists(MATS_DIR):
         os.makedirs(MATS_DIR)
     for geo_dir in GEOS_DIR:
         if not os.path.exists(geo_dir):
             os.makedirs(geo_dir)
+    print(f'Output directories:\n\t{MATS_DIR}', end='')
+    for i in range(len(GEOS_DIR)): print(f'\n\t{GEOS_DIR[i]}', end='')
+    print()
 
-    # plotting materials and saving to file
+    # plotting dielectric functions of all materials and saving to file
     for name in mat.materials:
+        print(f'Saving dielectric functions to file: {name}')
         filename = os.path.join(MATS_DIR, name)
         mat.plotMaterial(name, filename)
 
-    for ig, geo in enumerate(geometries):
+    # loop over all geometry setups
+    print(f'\n-------- Calculation starts --------\n')
+    for ii, geo in enumerate(geometries):
+        print(f'Set geometry: {geo}')
         mat.setGeometry(**geometries[geo])
+        # plotting geometry setup
+        filename = os.path.join(GEOS_DIR[ii], geo)
+        mat.plotGeometry(geo, filename)
+
+        print(f'\tCompute TMM matrix...')
         mat.TMM()
+        print(f'\tCalculate coefficients...')
         mat.calculateCoeff()
 
-        # loop oover the efields?
-        x_pol = mat.getCoeff('x_pol')
-        ia, ta, ra, ti, ri, ai2 = mat.getCoeff('left_pol')
 
-        # plotting geometry setup
-        filename = os.path.join(GEOS_DIR[ig], geo)
-        mat.plotGeometry(geo, filename)
-        # plotting results and save to file
-        #mat.plotResults()
-        #mat.saveResults()
+        for ef in data['efields']:
+            print(f'\t\tIncident fields: {ef}')
+            coeff = mat.getCoeff(ef)
+            # plotting results and save to file
+            mat.plotResults(ef)
