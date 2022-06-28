@@ -12,7 +12,7 @@ This tool implements the transfer matrix method (TMM) to describe the propagatio
 ## Installation
 
 ### Preferred installation: `pip`
-The preferred installation method is by using `pip`. This will allow the package to be installed in Windows, Unix and MacOS. In the realease page, simply download the [.zip file](https://github.com/t3n0/transfer-matrix-method/releases/latest) and extract it at your favorite location. Then move into the folder and run
+The preferred installation method is by using `pip`. This will allow the package to be installed in Windows, Unix and MacOS. In the release page, simply download the [.zip file](https://github.com/t3n0/transfer-matrix-method/releases/latest) and extract it at your favorite location. Then move into the folder and run
 
 `pip install .`
 
@@ -34,6 +34,14 @@ This tool requires:
 - `matplotlib`
 
 ## Usage
+
+There are two ways of using `tmm-tool`:
+1. as a shell command via `~$ tmm-tool <my_input_file>`
+2. as a python package via `from tmm.material import Material`
+
+### 1. Shell command
+
+### 2. python package
 
 ## Output
 
