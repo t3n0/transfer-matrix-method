@@ -65,6 +65,26 @@ To use `tmm-tool` as a package, you simply need to import the `Material` class
 
 `from tmm.material import Material`
 
+For a very basic usage you can copy the following snippet
+
+```
+from tmm.material import Material
+
+materials = {"air" : 1.0, "sapphire" : [3.07, 0.07] } # optical constants
+efield    = {"left_pol" : [1.0, "left"]}              # Jones vector
+freqs     = [0.0, 6.0, 1000]                          # frequency in eV
+geometry  = [ ["air", "sapphire", "air"],             # material arrangement
+              [100.0],                                # sapphire thickness
+              [0.0, 0.0, 0.0] ]                       # angles of every single layer (rad)
+
+# the calculation starts
+mat = Material(materials, efield, freqs)
+mat.setGeometry(*geometry)
+mat.TMM()
+mat.calculateCoeff()
+_ = mat.getCoeff()
+mat.plotResults('left_pol')
+```
 
 ## Output
 
