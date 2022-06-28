@@ -88,6 +88,10 @@ mat.plotResults('left_pol')
 
 ## Output
 
+The tool computes the **complex electric field amplitudes** (incident, reflected and transmitted) and the **real electric field intensities** (transmitted, reflected and absorbed). Also, it computes the **phase difference** between the x and y component of the electric field (incident, reflected and transmitted). The package provides the plotting routine `mat.plotResults()`. For example, left circular polarised light going through a 100nm thick stack of $\pi/2$ twisted [carbon nanotubes](./output_sample/setup2/setup2.png) produces the following results
+
+![left_pol](./output_sample/setup2/left_pol.png)
+
 ## Roadmap
 
 The project is stable enough to deserve a release and offers the basic capabilities of the transfer matrix method. However, several improvements are on the making and will include:
