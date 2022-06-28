@@ -7,7 +7,7 @@
 
 ![tmm-tool](./output_sample/setup2/setup2.png)
 
-This tool uses the transfer matrix method (TMM) to describe the propagation of electromagnetic waves in stacked layered materials at normal incidence.
+This tool implements the transfer matrix method (TMM) to describe the propagation of electromagnetic (EM) waves in stacked layered materials at normal incidence. It uses a 4x4 matrix formalism which can account for the propagation of the EM fields with both x and y components. The EM waves are described using the [Jones vector formalism](https://en.wikipedia.org/wiki/Jones_calculus). This allows the user to study the behaviour of the system with respect to the polarisation of light. Also, any layer can be arbitrary rotated by a given angle, thus allowing to study complex responses such as linear and/or circular [dichroism](https://en.wikipedia.org/wiki/Dichroism).
 
 ## Installation
 
