@@ -14,6 +14,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+from email import header
 import numpy as np
 import os
 import sys
@@ -26,6 +27,15 @@ cspeed = 299792.458       # nm/ps
 eps_vac = 8.8541878128e-9  # pF/nm
 mu_vac = 1.25663706212e-3  # ps^2/pF/nm
 eV2THz = 241.79893        # 1eV = 241.79893 THz
+
+
+def nk2eps(path, newpath):
+    data = np.loadtxt(path).T
+    freqs = data[0]
+    eps1 = data[1]**2 - data[2]**2
+    eps2 = 2*data[1]*data[2]
+    header = 'freqs(eV) eps1 eps2'
+    save_file(freqs, eps1, eps2, path=newpath, header=header)
 
 
 def mycolors(i, n):
@@ -75,12 +85,9 @@ def angle_between(vec1, vec2):
     # the resulting curve is continous
     angle1 = np.angle(vec1)
     angle2 = np.angle(vec2)
-    for i in range(len(angle1)-1):
-        angle1[i+1] = angle1[i+1] + \
-            np.rint((angle1[i] - angle1[i+1])/2/np.pi)*2*np.pi
-        angle2[i+1] = angle2[i+1] + \
-            np.rint((angle2[i] - angle2[i+1])/2/np.pi)*2*np.pi
     res = angle1 - angle2
+    for i in range(len(res)-1):
+        res[i+1] = res[i+1] + np.rint((res[i] - res[i+1])/2/np.pi)*2*np.pi
     return res
 
 
@@ -136,6 +143,7 @@ def save_file(*args, path, header=''):
             data.append(arg.imag)
     data = np.array(data)
     np.savetxt(path, data.T, header=header)
+
 
 def load_file(path):
     data = np.loadtxt(path)

@@ -256,10 +256,11 @@ class Material(object):
                 II[ii] = np.vdot(IA[ii, :], IA[ii, :])
                 RI[ii] = np.vdot(RA[ii, :], RA[ii, :])
                 TI[ii] = np.vdot(TA[ii, :], TA[ii, :])
+            deltaThetaI = angle_between(IA[:, 1], IA[:, 0])/np.pi
             deltaThetaT = angle_between(TA[:, 1], TA[:, 0])/np.pi
             deltaThetaR = angle_between(RA[:, 1], RA[:, 0])/np.pi
             self.coeff[f'{efield}({i},{f})'] = [
-                IA, TA, RA, (TI/II).real, (RI/II).real, 1 - (TI/II).real - (RI/II).real, deltaThetaT, deltaThetaR]
+                IA, TA, RA, (TI/II).real, (RI/II).real, 1 - (TI/II).real - (RI/II).real, deltaThetaT, deltaThetaR, deltaThetaI]
 
     def TMM(self, i=0, f=None):
         if f == None:
@@ -387,6 +388,8 @@ class Material(object):
                  rotation=90, transform=fig.transFigure)
         plt.text(0.52, 0.47, 'ΔΘ (rad/π)', ha='center', va='center',
                  rotation=90, transform=fig.transFigure)
+        plt.text(0.52, 0.74, 'ΔΘ (rad/π)', ha='center', va='center',
+                 rotation=90, transform=fig.transFigure)
         ax2.set_xticks([])
         ax3.set_xticks([])
         ax5.set_xticks([])
@@ -407,8 +410,10 @@ class Material(object):
         # plot delta theta
         ax1t = ax1.twinx()
         ax2t = ax2.twinx()
+        ax3t = ax3.twinx()
         ax1t.plot(self.freqs/eV2THz, data[7], 'g--')
         ax2t.plot(self.freqs/eV2THz, data[6], 'g--')
+        ax3t.plot(self.freqs/eV2THz, data[8], 'g--')
         # [f'{efield}({i},{f})']
         if path == None:
             plt.show()
