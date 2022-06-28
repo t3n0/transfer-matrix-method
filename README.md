@@ -8,3 +8,37 @@
 ![tmm-tool](./output_sample/setup2/setup2.png)
 
 This tool uses the transfer matrix method (TMM) to describe the propagation of electromagnetic waves in stacked layered materials at normal incidence.
+
+## Installation
+
+## Usage
+
+## Output
+
+## Roadmap
+
+The project is stable enough to deserve a release and offers the basic capabilities of the transfer matrix method. However, several improvements are on the making and will include:
+ - a more efficient and versatile input file for scripting;
+ - a routine to perform the removal of echos between layers;
+ - a routine to calculate linear and circular dichroism;
+ - the possibility of using different unit of measures (wavelength vs. frequency vs. energy);
+ - an integration with the [RefractiveIndex](https://refractiveindex.info/) database, which provides the necessary optical constants.
+
+## Support
+
+For any problems, questions or suggestions, please contact me at tenobaldi@gmail.com.
+
+## Authors and acknowledgment
+
+The development of this tool is proudly powered by [me](https://github.com/t3n0).
+Also, please consider citing the relevant literature if you are going to use this tool:
+ - [Phys. Rev. B 104, 155437 (2021)](https://doi.org/10.1103/PhysRevB.104.155437)
+ - [J Infrared Milli Terahz Waves 42, 1142–1152 (2021)](https://doi.org/10.1007/s10762-021-00815-5)
+
+## License
+
+This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+
+This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License along with this program.  If not, see <https://www.gnu.org/licenses/>.
