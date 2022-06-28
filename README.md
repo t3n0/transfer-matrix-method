@@ -11,6 +11,8 @@ This tool implements the transfer matrix method (TMM) to describe the propagatio
 
 ## Installation
 
+In the realease page, simply download the [.zip file](https://github.com/t3n0/transfer-matrix-method/releases/latest).
+
 ## Usage
 
 ## Output
