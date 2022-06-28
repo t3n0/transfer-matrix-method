@@ -36,12 +36,17 @@ This tool requires:
 ## Usage
 
 There are two ways of using `tmm-tool`:
-1. as a shell command via `~$ tmm-tool <my_input_file>`
-2. as a python package via `from tmm.material import Material`
+- as a shell command via `~$ tmm-tool <my_input_file>`
+- as a python package via `from tmm.material import Material`
 
-### 1. Shell command
+### Shell command usage
+Invoking the 'tmm-tool' from the command line is the easiest way to start using tool. Simply type in the terminal
 
-### 2. python package
+`tmm-tool <my_input_file>` (pip installation), or
+
+`python tmm-tool <my_input_file>` (stand-alone installation, from the base directory).
+
+### Python package usage
 
 ## Output
 
