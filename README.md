@@ -52,21 +52,18 @@ The software will (in order):
 - initialise the optical constants of the selected materials
 - initialise the amplitudes of the incident electric fields
 - construct the heterostructures (layers) given in input
-- compute reflection, transmission, absorption coefficients (and more)
+- compute the total reflection, transmission, absorption coefficients (and more)
 - output the data to the destination folders
+
+At the moment, the command line code only computes the **total** transmission, reflection or absorption of the system.
+In other words, the code computes the transfer matrix $T = T_{if}$ between the initial (i) and final (f) layers.
+If the user wants to compute the coefficients for the intermidiate layers (e.g. as in a *echo removal* calculation), the python package (see below) should be used. This feature will be implemented in the next versions.
 
 ### Python package usage
 
-You can import the `tmm-tool` package by simply typing
+To use `tmm-tool` as a package, you simply need to import the `Material` class
 
-`import tmm.<module>`
-
-in your python script.
-
-At the moment, `tmm` defines only three modules:
-- `tmm.material`
-- `tmm.utils`
-- `tmm.main`
+`from tmm.material import Material`
 
 
 ## Output
