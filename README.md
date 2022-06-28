@@ -46,7 +46,7 @@ Invoking the `tmm-tool` from the command line is the easiest way to start using 
 
 `python tmm-tool <my_input_file>` (stand-alone installation, from the base directory).
 
-The tool requires a file `<my_input_file>` in `json` format. An example of this is given in [input.txt](./input.txt)
+The tool requires a file `<my_input_file>` in `json` format. An example of this is given in [input.txt](./input.txt) and a thorough description of the `json` (key, value) pairs is given in [here](not-yet).
 
 
 ### Python package usage
