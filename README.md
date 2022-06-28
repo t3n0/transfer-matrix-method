@@ -11,7 +11,21 @@ This tool implements the transfer matrix method (TMM) to describe the propagatio
 
 ## Installation
 
-In the realease page, simply download the [.zip file](https://github.com/t3n0/transfer-matrix-method/releases/latest).
+### Preferred installation: `pip`
+The preferred installation method is by using `pip`. This will allow the package to be installed in Windows, Unix and MacOS. In the realease page, simply download the [.zip file](https://github.com/t3n0/transfer-matrix-method/releases/latest) and extract it at your favorite location. Then move into the folder and run
+
+`pip install .`
+
+This will install two things:
+ - the `tmm-tool` python package
+ - and the `tmm-tool` shell command.
+ 
+If you are using anaconda as you python environment, you can check the succesfull installation of the package by typing `conda list`.
+
+To uninstall type `pip uninstall tmm-tool`.
+
+### Stand-alone installation
+If you are not confortable in using `pip` and prefer not to install the system-wide `tmm-tool` shell command, simply copy-paste the source and run the tool from within the base folder.
 
 ## Usage
 
