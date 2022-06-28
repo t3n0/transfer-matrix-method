@@ -40,7 +40,7 @@ There are two ways of using `tmm-tool`:
 - as a python package via `from tmm.material import Material`
 
 ### Shell command usage
-Invoking the 'tmm-tool' from the command line is the easiest way to start using tool. Simply type in the terminal
+Invoking the `tmm-tool` from the command line is the easiest way to start using tool. Simply type in the terminal
 
 `tmm-tool <my_input_file>` (for the pip installation case), or
 
