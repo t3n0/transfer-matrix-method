@@ -62,7 +62,6 @@ def main():
 
         for ef in data['efields']:
             print(f'\t\tIncident fields: {ef}')
-            coeff = mat.getCoeff(ef)
             # plotting results and save to file
             filename = os.path.join(GEOS_DIR[ii], ef)
             mat.plotResults(ef, filename)
