@@ -48,6 +48,12 @@ Invoking the `tmm-tool` from the command line is the easiest way to start using 
 
 The tool requires a file `<my_input_file>` in `json` format. An example of this is given in [input.txt](./input.txt) and a thorough description of the `json` (key, value) pairs is given in [here](not-yet).
 
+The software will (in order):
+- initialise the optical constants of the selected materials
+- initialise the amplitudes of the incident electric fields
+- construct the heterostructures (layers) given in input
+- compute reflection, transmission, absorption coefficients (and more)
+- output the data to the destination folders
 
 ### Python package usage
 
