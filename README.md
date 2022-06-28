@@ -40,7 +40,7 @@ There are two ways of using `tmm-tool`:
 - as a python package via `from tmm.material import Material`
 
 ### Shell command usage
-Invoking the `tmm-tool` from the command line is the easiest way to start using tool. Simply log into the terminal and type
+Invoking the `tmm-tool` from the command line is the easiest way to start using the tool. Simply log into the terminal and type
 
 `tmm-tool <my_input_file>` (for the pip installation case), or
 
@@ -56,6 +56,18 @@ The software will (in order):
 - output the data to the destination folders
 
 ### Python package usage
+
+You can import the `tmm-tool` package by simply typing
+
+`import tmm.<module>`
+
+in your python script.
+
+At the moment, `tmm` defines only three modules:
+- `tmm.material`
+- `tmm.utils`
+- `tmm.main`
+
 
 ## Output
 
