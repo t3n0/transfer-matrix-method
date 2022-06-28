@@ -27,6 +27,12 @@ To uninstall type `pip uninstall tmm-tool`.
 ### Stand-alone installation
 If you are not confortable in using `pip` and prefer not to install the system-wide `tmm-tool` shell command, simply copy-paste the source and run the tool from within the base folder.
 
+### Requirements
+This tool requires:
+- `python >=3.5`
+- `numpy`
+- `matplotlib`
+
 ## Usage
 
 ## Output
