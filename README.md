@@ -82,7 +82,6 @@ mat = Material(materials, efield, freqs)
 mat.setGeometry(*geometry)
 mat.TMM()
 mat.calculateCoeff()
-_ = mat.getCoeff()
 mat.plotResults('left_pol')
 ```
 
