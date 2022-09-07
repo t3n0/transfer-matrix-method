@@ -1,5 +1,5 @@
-# electric field in the y direction
-# energy (eV), amplitude
+# electric field in the x direction
+# frequency (eV), amplitude
 1.995999999999999858e-02 1.258591149245510993e-16
 3.991999999999999715e-02 2.224895840932177687e-16
 5.987999999999999573e-02 3.208790414819015140e-16
