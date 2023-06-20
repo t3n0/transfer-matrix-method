@@ -108,6 +108,8 @@ For any problems, questions or suggestions, please contact me at tenobaldi@gmail
 
 The development of this tool is proudly powered by [me](https://github.com/t3n0).
 Also, please consider citing the relevant literature if you are going to use this tool:
+ - [Phys. Rev. B 107, 144407 (2023)](https://doi.org/10.1103/PhysRevB.107.144407)
+ - [Preprint arXiv:2206.00895 (2022)](https://doi.org/10.48550/arXiv.2206.00895)
  - [Phys. Rev. B 104, 155437 (2021)](https://doi.org/10.1103/PhysRevB.104.155437)
  - [J Infrared Milli Terahz Waves 42, 1142–1152 (2021)](https://doi.org/10.1007/s10762-021-00815-5)
 
